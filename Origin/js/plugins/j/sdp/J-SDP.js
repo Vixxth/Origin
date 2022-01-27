@@ -149,16 +149,6 @@
  * @type string[]
  * @desc The unique keys for the SDPs that will be reset.
  * 
- * @command Unlock Actor SDP
- * @text Unlock SDP(s) for Actor 
- * @desc Unlock a panel for the current Actor to level by its key. Key must exist in the SDPs list above.
- * @arg actorId
- * @type actor
- * @desc The actor to modify the points of.
- * @arg keys
- * @type string[]
- * @desc The unique keys for the SDPs that will be reset.
- * 
  * @command Unlock SDP
  * @text Unlock Panel(s)
  * @desc Unlocks a new panel for the player to level up by its key. Key must exist in the SDPs list above.
