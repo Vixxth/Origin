@@ -7305,16 +7305,6 @@ Game_Map.prototype.findBattlerByUuid = function(uuid)
 
   return [battler, targetIndex];
 };
-
-/**
- * Removes a battler from tracking by its index in the master tracking list.
- * @param {number} index The index to splice away.
- */
-Game_Map.prototype.deleteBattlerByIndex = function(index)
-{
-  this._j._allBattlers.splice(index, 1);
-};
-
 /**
  * Deletes and removes a `JABS_Battler` from this map's tracking.
  * @param {JABS_Battler} targetBattler The map battler to destroy.

@@ -227,7 +227,38 @@ Game_BattleMap.prototype.addLootDropToMap = function(targetX, targetY, item)
   targetY += 1;
   J.CAMods.Aliased.Game_BattleMap.addLootDropToMap.call(this, targetX, targetY, item);
 };
-
+/**
+ * Finds the battler and its index in the collection by its `_eventId`.
+ *
+ * The result of this is intended to be destructured from the array.
+ * If no result is found, the battler will be null, and index will be -1.
+ * @param {number} eventId The `_eventId` of the battler to find.
+ * @returns {[JABS_Battler, number]}
+ */
+ Game_Map.prototype.findBattlerByEventId = function(eventId)
+ {
+   let targetIndex = -1;
+   const battler = this._j._allBattlers.find((battler, index) =>
+   {
+     // do not process non-enemies.
+     if (!battler.isEnemy()) return false;
+ 
+     // check if the enemy matches the event we're looking for.
+     const isTargetEvent = battler.getCharacter().eventId() === eventId;
+ 
+     // if it isn't the event we're looking for, keep looking.
+     if (!isTargetEvent) return false;
+ 
+     // grab the index in the collection.
+     targetIndex = index;
+ 
+     // we found a match!
+     return true;
+   });
+ 
+   // return the results.
+   return [battler, targetIndex];
+ };
 /**
  * Extends the handling of defeated enemies to track data.
  * @param {JABS_Battler} defeatedTarget The `JABS_Battler` that was defeated.
