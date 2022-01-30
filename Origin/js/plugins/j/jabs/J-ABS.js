@@ -377,6 +377,16 @@
  * @text Enable JABS
  * @desc Enables the JABS engine allowing battles on the map to take place.
  * 
+ * @command Damage Actor HP
+ * @text Deal x dmg to ActorID 
+ * @desc Deal int value damage to the actor ID.
+ * @arg eventIds
+ * @type number[]
+ * @desc The actor to modify the points of.
+ * @arg dmg
+ * @type number
+ * @desc Inte value of damage actor needs to take..
+ * 
  * @command Disable JABS
  * @text Disable JABS
  * @desc Disables the JABS engine.

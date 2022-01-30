@@ -20,6 +20,16 @@
  * @type string[]
  * @desc The unique keys for the SDPs that will be reset.
  * 
+ * @command Damage Actor HP
+ * @text Deal x dmg to ActorID 
+ * @desc Deal int value damage to the actor ID.
+ * @arg actorId
+ * @type actor
+ * @desc The actor to modify the points of.
+ * @arg dmg
+ * @type number
+ * @desc Inte value of damage actor needs to take..
+ * 
  */
 
 
@@ -36,6 +46,14 @@ J.SDP.OR = {};
      $gameSystem.resetSdp(actorId,key);
    });
  });
+ PluginManager.registerCommand(J.SDP.Metadata.Name, "Damage Actor HP", args =>
+ {
+   let {actorId,dmg} = args;
+   dmg = parseInt(dmg);
+   actorId = parseInt(actorId);
+  $gameSystem.dealDmg(actorId,key);
+ });
+
 
  PluginManager.registerCommand(J.SDP.Metadata.Name, "Unlock Actor SDP", args =>
  {
@@ -47,6 +65,15 @@ J.SDP.OR = {};
    });
  });
  
+
+//Deal damage to specified Actor
+Game_System.prototype.dealDmg = function(actorId,dmg)
+{
+  $gameActors.actor(actorId).hp -=dmg;
+  
+};
+
+
 //Unlock Specific SDP for current actor
  Game_System.prototype.unlockSdpActor = function(actorId,key)
 {
