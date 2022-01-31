@@ -4,9 +4,9 @@
 
 /*:
  * @target MZ
- * @plugindesc (v1.3) Adiciona novos efeitos de climas.
+ * @plugindesc (v1.4) Adiciona novos efeitos de climas.
  * @author Moghunter
- * @url https://atelierrgss.wordpress.com 
+ * @url https://mogplugins.wordpress.com
  *
  * @param Battle Weather
  * @desc Ativar o clima na batalha.
@@ -190,16 +190,13 @@
  * @type boolean 
  * @default true
  *
- * @param
- *
- *
-/
- * 
  * @help  
  * =============================================================================
- * +++ MOG - Weather EX (v1.3) +++
- * By Moghunter 
- * https://atelierrgss.wordpress.com/
+ * ♦♦♦ MOG - Weather EX ♦♦♦
+ * Author   -   Moghunter
+ * Version  -   1.4
+ * Updated  -   2021/04/16
+ * https://mogplugins.wordpress.com
  * =============================================================================
  * Adiciona novos efeitos de climas.
  * As imagens do clima devem ser gravadas na pasta. (img/weather/)
@@ -207,14 +204,15 @@
  * =============================================================================
  * - MAP NOTETAGS
  * =============================================================================
- * To activate the climate use the comment below through the PLUGIN COMMAND function
+ * Para ativar o clima use o comentário abaixo através da função PLUGIN COMMAND
  *
  * weather ID : TYPE : POWER : SPEED : BLEND_TYPE : FILE_NAME 
  *
  *
- * -> ID - Defines the climate ID, it is possible to use up to 10 different climates at the  same time.
+ * -> ID - Define a ID do clima, é possível utilizar até 10 climas diferentes ao 
+ * mesmo tempo.
  *
- * -> TYPE - Weather (from 0 to 29)
+ * -> TYPE - Efeito (de 0 a 29)
  *        0 -  Wind 1 (Falling)
  *        1 -  Wind 2 (Left Side)
  *        2 -  Wind 3 (Zoom)
@@ -284,6 +282,7 @@
  * ============================================================================= 
  * * HISTÓRICO
  * =============================================================================
+ * (v1.4) - Compatibilidade com MOG_BattleCamera.   
  * (v1.3) - Correção na função sort relativo a codificação.  
  * (v1.2) - Melhoria no Plugin Command na seleção do arquivo de imagem.
  * (v1.1) - Correção de compatibilidade com o plugin ButtonPicture.
@@ -916,6 +915,26 @@ SpriteWeatherEX.prototype.initialize = function(id) {
 	this._modePosX = 0;
 	this._screenRX = Graphics.width;
 	this._screenRY = Graphics.height;
+	this._camera = {};
+	this._camera.limitX = 0;
+	this._camera.limitY = 0;
+	this._camera.randomX = 50
+	this._camera.randomY = 70
+	this._camera.tilingX = 0;
+	this._camera.tilingY = 0;
+	this._camera.bottonPos = 0;
+	const gw = ((Graphics.width - 816) / 2);
+	const gh = ((Graphics.height - 624) / 2);
+	if (Imported.MOG_BattleCamera && $gameParty.inBattle()) {
+	    this._camera.limitX = (Graphics.width / 4)
+	    this._camera.limitY = (Graphics.height / 4);
+		this._camera.randomX = 120 + gw;
+	    this._camera.randomY = -50 + gh;
+		this._camera.bottonPos = 150 - gh;
+		this._camera.tilingX = 100 - gw;
+		this._camera.tilingY = -gh;
+	}
+	
 	this._screenAn = Math.floor(this._screenRX / 13);
 	this._speed = 0;
 	this._imgChecked = false;
@@ -1047,10 +1066,10 @@ SpriteWeatherEX.prototype.createSprites = function() {
 	var power = this.data().mode >= 32 ? 1 : this.data().power;
     for (var i = 0; i < power; i++) {
 		if (this.isTilingWeather()) {
-			this._sprites[i] = new TilingSprite(this._image);
+		    this._sprites[i] = new TilingSprite(this._image);
 			this._sprites[i].tiling = true;
 			this._sprites[i].needRefreshMove = false;
-			this._sprites[i].move(0, 0,Graphics.width + 32,Graphics.height + 32);
+		    this._sprites[i].move(0, 0,Graphics.width + 32,Graphics.height + 32);
 			this._sprites[i].x = -16 + (Graphics.width / 2);
 			this._sprites[i].y = -16 + (Graphics.height / 2);
 		} else {
@@ -1110,41 +1129,41 @@ SpriteWeatherEX.prototype.setupBase = function(sprite,index) {
 // * loadPreData
 //==============================
 SpriteWeatherEX.prototype.loadPreData = function(sprite,data) {
-	sprite.x = data.x;
-	sprite.y = data.x;
-	sprite.scale.x = data.scaleX;
-	sprite.scale.y = data.scaleY;
-	sprite.anchor.x = data.anchorX;
-	sprite.anchor.y = data.anchorY;
-	sprite.blendMode = data.blendMode;
-	sprite.rotation = data.rotation;
-	sprite.opacity = data.opacity;
-	sprite._realX = data.realX;
-	sprite._realY = data.realY;
-	sprite._sx = data.sx;
-	sprite._sy = data.sy;
-	sprite._rt = data.rt;
-	sprite._zx = data.zx;
-	sprite._zy = data.zy;
-	sprite._zx2 = data.zx2;
-	sprite._zy2 = data.zy2;	 
-	sprite._zp = data.zp;
-	sprite._ani = data.ani;	
-	sprite._roll = data.roll;
-	sprite._frames = data.frames;
-	sprite._id = data.idS;
-	sprite.origin.x = data.originX;
-	sprite.origin.y = data.originY;
-	if (this.isTilingWeather()) {this.refreshTilingPos(sprite)};
+	 sprite.x = data.x;
+	 sprite.y = data.x;
+	 sprite.scale.x = data.scaleX;
+	 sprite.scale.y = data.scaleY;
+	 sprite.anchor.x = data.anchorX;
+	 sprite.anchor.y = data.anchorY;
+	 sprite.blendMode = data.blendMode;
+  	 sprite.rotation = data.rotation;
+	 sprite.opacity = data.opacity;
+	 sprite._realX = data.realX;
+	 sprite._realY = data.realY;
+	 sprite._sx = data.sx;
+	 sprite._sy = data.sy;
+	 sprite._rt = data.rt;
+	 sprite._zx = data.zx;
+	 sprite._zy = data.zy;
+	 sprite._zx2 = data.zx2;
+	 sprite._zy2 = data.zy2;	 
+	 sprite._zp = data.zp;
+	 sprite._ani = data.ani;	
+	 sprite._roll = data.roll;
+	 sprite._frames = data.frames;
+	 sprite._id = data.idS;
+	 sprite.origin.x = data.originX;
+	 sprite.origin.y = data.originY;
+	 if (this.isTilingWeather()) {this.refreshTilingPos(sprite)};
 };		
 
 //==============================
 // * refreshTilingPos
 //==============================
 SpriteWeatherEX.prototype.refreshTilingPos = function(sprite) {
-	sprite.move(0, 0,Graphics.width + 32 + this._cam[7],Graphics.height + 32 + this._cam[8]);
-	sprite.x = -16 + (Graphics.width / 2) - this._cam[0];
-	sprite.y = -16 + (Graphics.height / 2) - this._cam[1];
+     sprite.move(0, 0,Graphics.width + 32 + this._cam[7] + this._camera.limitX,Graphics.height + 32 + this._cam[8] + this._camera.limitY);
+	 sprite.x = -16 + (Graphics.width / 2) - this._cam[0] + this._camera.limitX + this._camera.tilingX;
+	 sprite.y = -16 + (Graphics.height / 2) - this._cam[1] + this._camera.limitY + this._camera.tilingY;
 };
 
 //==============================
@@ -1184,42 +1203,42 @@ SpriteWeatherEX.prototype.needFixScreenMode = function() {
 // * screen limit X1
 //==============================
 SpriteWeatherEX.prototype.screenLimitX1 = function(sprite) {
-	return -(sprite.width + this._cam[0] + 96 - this._cam[5]) ;
+	return -(sprite.width + this._cam[0] + this._camera.limitX + 96 - this._cam[5]) ;
 };
 
 //==============================
 // * screen limit X2
 //==============================
-SpriteWeatherEX.prototype.screenLimitX2= function(sprite) {
-	return (this._screenRX + sprite.width + this._cam[0] + 96) - this._cam[7];
+SpriteWeatherEX.prototype.screenLimitX2 = function(sprite) {
+	return (this._screenRX + sprite.width + this._cam[0] + this._camera.limitX + 96) - this._cam[7];
 };
 
 //==============================
 // * screen limit Y1
 //==============================
 SpriteWeatherEX.prototype.screenLimitY1 = function(sprite) {
-	return -(sprite.height + this._cam[1] + 96 - this._cam[6]);
+	return -(sprite.height + this._cam[1] + this._camera.limitY + 96 - this._cam[6]);
 };
 
 //==============================
 // * screen limit Y2
 //==============================
 SpriteWeatherEX.prototype.screenLimitY2 = function(sprite) {
-	return (this._screenRY + sprite.height + this._cam[1] + 96) - this._cam[8];
+	return (this._screenRY + sprite.height + this._cam[1] + this._camera.limitY + 96) - this._cam[8];
 };
 
 //==============================
 // * random Pos X
 //==============================
 SpriteWeatherEX.prototype.randomPosX = function(sprite) {
-    sprite._realX = -(this._cam[0] + 50 + this._modePosX) + (Math.randomInt(this.screenX() + this._screenRX + 50 + this._cam[0] + this._cam[3]));
+    sprite._realX = -(this._cam[0] + this._camera.randomX + this._modePosX + this._camera.limitX) + (Math.randomInt(this.screenX() + this._screenRX + 50 + this._cam[0] + this._cam[3] + (this._camera.limitX * 4)));
 };
 
 //==============================
 // * random Pos Y
 //==============================
 SpriteWeatherEX.prototype.randomPosY = function(sprite) {
-    sprite._realY = -(this._cam[1] + 50 + this._modePosX) + (Math.randomInt(this.screenY() + this._screenRY + 70 + this._cam[1] + this._cam[4]));
+    sprite._realY = -(this._cam[1] + this._camera.randomY + this._modePosX + this._camera.limitY) + (Math.randomInt(this.screenY() + this._screenRY + 70 + this._cam[1] + this._cam[4] + (this._camera.limitY * 4)));
 };
 
 //==============================
@@ -1284,7 +1303,7 @@ SpriteWeatherEX.prototype.randomPosY2 = function(sprite) {
 SpriteWeatherEX.prototype.upperPos = function(sprite,range) {
 	var rg = this._cam[1] ? this._cam[1] : range;
 	this.randomPosX(sprite);
-    sprite._realY = -rg + this.screenY();
+    sprite._realY = -rg + this.screenY() - (this._camera.limitY / 3);
 };
 
 //==============================
@@ -1293,7 +1312,7 @@ SpriteWeatherEX.prototype.upperPos = function(sprite,range) {
 SpriteWeatherEX.prototype.bottomPos = function(sprite,range) {
  	 var rg = this._cam[1] ? this._cam[1] : range;
 	 this.randomPosX(sprite);
-     sprite._realY = -rg + this.screenY() + this._screenRY;
+     sprite._realY = -rg + this.screenY() + this._screenRY + this._camera.limitY + this._camera.bottonPos;
 };
 
 //==============================
@@ -1303,7 +1322,7 @@ SpriteWeatherEX.prototype.bottomPos2 = function(sprite) {
 	 this.randomPosX(sprite);
 	 var sp = Math.floor(this._screenRY / 4) + this._cam[1];
 	 var sy = (this.screenY() + this._screenRY) - sp;
-     sprite._realY = -this._cam[1] + sy + Math.randomInt(sp);
+     sprite._realY = -this._cam[1] + sy + Math.randomInt(sp) + this._camera.limitY + this._camera.bottonPos;
 };
 
 //==============================
@@ -1313,7 +1332,7 @@ SpriteWeatherEX.prototype.bottomPos3 = function(sprite) {
 	 this.randomPosX(sprite);
 	 var sp = Math.floor(this._screenRY / 2) + this._cam[0];
 	 var sy = (this.screenY() + this._screenRY) - sp;
-     sprite._realY = -this._cam[1] + sy + Math.randomInt(sp);
+     sprite._realY = -this._cam[1] + sy + Math.randomInt(sp) + this._camera.limitY + this._camera.bottonPos;
 };
 
 //==============================
@@ -1322,7 +1341,7 @@ SpriteWeatherEX.prototype.bottomPos3 = function(sprite) {
 SpriteWeatherEX.prototype.leftPos = function(sprite,range) {
 	if (!range) {range = 0};
  	var rg = this._cam[0] ? this._cam[0] : range;
-	sprite._realX = -rg + this.screenX();
+	sprite._realX = -rg + this.screenX() - this._camera.limitX;
     this.randomPosY(sprite);	
 };
 
@@ -1332,7 +1351,7 @@ SpriteWeatherEX.prototype.leftPos = function(sprite,range) {
 SpriteWeatherEX.prototype.rightPos = function(sprite,range) {
 	if (!range) {range = 0};
 	 var rg = this._cam[0] ? this._cam[0] : range;
-	 sprite._realX = -rg + this.screenX() + this._screenRX;
+	 sprite._realX = -rg + this.screenX() + this._screenRX + (this._camera.limitX * 2) + (this._camera.randomX / 3);
      this.randomPosY(sprite);		
 };
 
@@ -1740,11 +1759,11 @@ SpriteWeatherEX.prototype.refreshWeather = function(sprite,initial) {
 // * set Cam Offset
 //==============================
 SpriteWeatherEX.prototype.setCamOffset = function(sprite) {
-	var x = Graphics.width / 3;
+    var x = Graphics.width / 3;
 	var x2 = Graphics.width / 3;
 	var y = Graphics.height / 3;
 	var y2 = Graphics.height / 2;
-	this._cam = [x,y,false,0,0,0,0,x2,y2];
+    this._cam = [x,y,false,0,0,0,0,x2,y2];
 	if (this.isTilingWeather()) {this.refreshTilingPos(sprite)};
 };
 
@@ -1959,7 +1978,7 @@ SpriteWeatherEX.prototype.setupWind2 = function(sprite) {
 // * Setup Wind
 //==============================
 SpriteWeatherEX.prototype.setupWind3 = function(sprite) {
-     this.setPosLeft(sprite);
+     this.setPosRandom(sprite);
 	 this.randomZoom(0.50,sprite);
 	 sprite.opacity = 0;
 	 sprite.anchor.x = -1;
@@ -2790,7 +2809,7 @@ SpriteWeatherEX.prototype.setupSunLight1 = function(sprite) {
 		this.leftPos(sprite,96);
      } else { 
 		this.randomPosX(sprite);
-		sprite._realY = -128;
+		sprite._realY = - (128 + this._camera.limitY + this._camera.randomY);
      };
 	 sprite.anchor.x = 0;
 	 sprite.anchor.y = 0;
