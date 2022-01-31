@@ -1,4 +1,24 @@
-/*
+
+//#region Introduction
+/*:
+ * @target MZ
+ * @plugindesc 
+ * [v3.0 JABS] Injects functionality to base J-ABS plugin.
+ * @author JE
+ * @url https://github.com/je-can-code/rmmz
+ * @base J-ABS
+ * @orderAfter J-ABS
+ * @help
+ * ============================================================================
+  * provides direct functionality to deal damage to specific event 'monster'
+  * plugincommand "Deal HP Damage" takes event IDS to impact and damage to inflict
+  * 
+  * to invoke directly from script damage modifier needs to be negative
+  * $gameSystem.dealDmgtoTargetEvent(ID,DMG)
+  * $gameSystem.dealDmgtoTargetEvent(24,-50)
+ * ============================================================================
+ *
+ * ============================================================================
 *
  * @command Deal HP Damage
  * @text Deal x dmg to ActorID 
@@ -11,7 +31,7 @@
  * @desc Inte value of damage actor needs to take..
  * 
  */
-
+//#endregion Introduction
 
 var J = J || {};
 J.ABS.OR = {};
@@ -22,29 +42,30 @@ J.ABS.OR = {};
  PluginManager.registerCommand(J.ABS.Metadata.Name, "Deal HP Damage", args =>
  {
    // extract the event ids and damage from the plugin args.
-   const { eventIds, dmg } = args;
- 
+   const { eventIds, dmg } = args; 
    // translate the damage.
-   const damageToDeal = parseInt(dmg) * -1;
- 
+   const damageToDeal = parseInt(dmg) * -1; 
    // translate the event ids.
-   const targetEventIds = JSON.parse(eventIds);
- 
+   const targetEventIds = JSON.parse(eventIds); 
    // iterate over all parsed event ids.
    targetEventIds.forEach(eventId =>
    {
-     // scan the map for the matching event id.
-     const [targetEnemy] = $gameMap.findBattlerByEventId(eventId);
- 
-     // check to see if we found one.
-     if (targetEnemy)
-     {
-       // apply the damage directly to the target's hp.
-       targetEnemy.getBattler().gainHp(damageToDeal);
-     }
+          $gameSystem.dealDmgtoTargetEvent(eventId,damageToDeal);
    });
  });
- 
+
+ Game_System.prototype.dealDmgtoTargetEvent = function(eventId,damageToDeal){
+  // scan the map for the matching event id.
+  const [targetEnemy] = $gameMap.findBattlerByEventId(eventId);
+
+  // check to see if we found one.
+  if (targetEnemy)
+  {
+    // apply the damage directly to the target's hp.
+    targetEnemy.getBattler().gainHp(damageToDeal);
+  }
+
+ };
 /**
  * Removes a battler from tracking by its index in the master tracking list.
  * @param {number} index The index to splice away.
